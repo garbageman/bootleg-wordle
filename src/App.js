@@ -65,18 +65,23 @@ export default function App() {
 
   const updateGuessedLetters = (guess) => {
     const newLetters = [];
+    const newCorrectLetters = [];
     for (var i = 0; i < 5; i++) {
-      const letter = guess[i];
+      const letter = guess.charAt(i);
       if (!guessedLetters.includes(letter)) {
         newLetters.push(letter);
       }
       if (!correctLetters.includes(letter) && SOLUTION.charAt(i) === letter) {
-        setCorrectLetters([...correctLetters, letter]);
+        newCorrectLetters.push(letter);
       }
     }
     if (newLetters.length) {
-      const newGuessedLetters = [...guessedLetters, ...newLetters];
-      setGuessedLetters(newGuessedLetters);
+      const totalGuessedLetters = [...guessedLetters, ...newLetters];
+      setGuessedLetters(totalGuessedLetters);
+    }
+    if (newCorrectLetters.length) {
+      const totalCorrectLetters = [...correctLetters, ...newCorrectLetters];
+      setCorrectLetters(totalCorrectLetters);
     }
   };
 
