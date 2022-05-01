@@ -2,24 +2,36 @@ import React from 'react';
 import './KeyboardKey.css';
 
 export default function KeyboardKey(props) {
-  let getKeyboardKeyClasses = (state) => {
+  let getKeyboardKeyClasses = () => {
     let keyClass = 'keyboard-key';
-    if (state === 'CORRECT') {
+    if (props.keyState === 'CORRECT') {
       keyClass = keyClass + ' correct';
     }
 
-    if (state === 'INCORRECT') {
+    if (props.keyState === 'INCORRECT') {
       keyClass = keyClass + ' incorrect';
+    }
+
+    if (props.keyValue === 'ENTER' || props.keyValue === 'DELETE') {
+      keyClass = keyClass + ' special';
     }
 
     return keyClass;
   };
+
+  let getTruncatedVal = () => {
+    if (props.keyValue === 'DELETE') {
+      return 'DEL';
+    }
+
+    return props.keyValue;
+  };
   return (
     <div
       onClick={props.onClick}
-      className={getKeyboardKeyClasses(props.keyState)}
+      className={getKeyboardKeyClasses()}
     >
-      {props.keyValue}
+      {getTruncatedVal()}
     </div>
   );
 }

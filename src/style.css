@@ -4,10 +4,23 @@ p {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.app-container {
+body {
+  margin: 0;
   background-color: black;
+}
+
+.app-container {
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
   display: flex;
   justify-content: center;
   padding-top: 2rem;
   flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  background-color: black;
 }
