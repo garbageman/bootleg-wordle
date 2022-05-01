@@ -1,6 +1,6 @@
 .keyboard-row {
   display: flex;
   flex-direction: row;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   width: 100%;
 }

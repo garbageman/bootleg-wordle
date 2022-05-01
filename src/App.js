@@ -3,6 +3,7 @@ import wordList from 'word-list';
 import { getWordsList } from 'most-common-words-by-language';
 import WordGrid from './ui/wordGrid/WordGrid.js';
 import KeyBoard from './ui/keyboard/KeyBoard.js';
+import Overlay from './ui/overlay/Overlay.js';
 import './style.css';
 
 const potentialSolutions = getWordsList('english', 10000).filter(
@@ -16,6 +17,13 @@ export default function App() {
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [guesses, setGuesses] = useState([]);
   const [validWords, setValidWords] = useState([]);
+  const [completed, setCompleted] = useState(false);
+  let overlayMessage = '';
+  if (currentGuess === SOLUTION) {
+    overlayMessage = 'CONGRATS!';
+  } else {
+    overlayMessage = SOLUTION;
+  }
 
   useEffect(() => {
     fetch(wordList)
@@ -49,6 +57,8 @@ export default function App() {
         setCurrentGuess('');
       }
     }
+
+    setCompleted(guesses.length === 5 || currentGuess === SOLUTION);
   };
 
   const updateGuessedLetters = (guess) => {
@@ -79,10 +89,13 @@ export default function App() {
   };
 
   const guessObjects = guesses.map((guess) => ({ guess, submitted: true }));
-  guessObjects.push({ guess: currentGuess, submitted: false });
+  if (guessObjects.length < 6) {
+    guessObjects.push({ guess: currentGuess, submitted: false });
+  }
 
   return (
     <div className="app-container">
+      {completed ? <Overlay overlayMessage={overlayMessage}  /> : null }
       <WordGrid guesses={guessObjects} solution={SOLUTION} />
       <KeyBoard
         onKeyPress={handleKeyPress}

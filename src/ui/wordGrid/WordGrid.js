@@ -6,10 +6,13 @@ const MAX_ROW_COUNT = 6;
 
 export default function WordGrid(props) {
   const guesses = props.guesses ?? [];
-  const extraRows = new Array(MAX_ROW_COUNT - guesses.length).fill({
-    guess: '',
-    submitted: false,
-  });
+  const extraRowCount = MAX_ROW_COUNT - guesses.length;
+  const extraRows = extraRowCount
+    ? new Array(extraRowCount).fill({
+        guess: '',
+        submitted: false,
+      })
+    : [];
   const gridData = [...guesses, ...extraRows];
   const grid = gridData.map(({ guess, submitted }, index) => (
     <WordRow
