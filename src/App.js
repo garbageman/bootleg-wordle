@@ -19,13 +19,9 @@ export default function App() {
   const [guesses, setGuesses] = useState([]);
   const [validWords, setValidWords] = useState([]);
   const [completed, setCompleted] = useState(false);
+  const [solved, setSolved] = useState(false);
 
-  let overlayMessage = '';
-  if (currentGuess === SOLUTION) {
-    overlayMessage = 'CONGRATS!';
-  } else {
-    overlayMessage = SOLUTION;
-  }
+  const overlayMessage = solved ? 'CONGRATS!' : SOLUTION;
 
   useEffect(() => {
     fetch(wordList)
@@ -61,6 +57,7 @@ export default function App() {
     }
 
     setCompleted(guesses.length === 5 || currentGuess === SOLUTION);
+    setSolved(currentGuess === SOLUTION);
   };
 
   const updateGuessedLetters = (guess) => {
