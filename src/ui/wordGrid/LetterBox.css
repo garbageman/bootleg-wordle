@@ -1,0 +1,28 @@
+.letter {
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  border-style: solid;
+  border-width: 2px;
+  font-size: 2rem;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  border-color: #3a3a3c;
+}
+
+.correct {
+  background-color: #538d4e;
+  border-color: #538d4e;
+}
+
+.wrong-spot {
+  background-color: goldenrod;
+  border-color: goldenrod;
+}
+
+.incorrect {
+  background-color: #3a3a3c;
+  border-color: #3a3a3c;
+}

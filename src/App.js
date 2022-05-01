@@ -1,0 +1,94 @@
+import React, { useState, useEffect } from 'react';
+import wordList from 'word-list';
+import { getWordsList } from 'most-common-words-by-language';
+import WordGrid from './ui/wordGrid/WordGrid.js';
+import KeyBoard from './ui/keyboard/KeyBoard.js';
+import './style.css';
+
+const potentialSolutions = getWordsList('english', 10000).filter(
+  (word) => word.length === 5 && word.charAt(word.length - 1) !== 's'
+);
+const solutionIndex = Math.floor(Math.random() * potentialSolutions.length);
+const SOLUTION = potentialSolutions[solutionIndex].toUpperCase();
+
+export default function App() {
+  const [currentGuess, setCurrentGuess] = useState('');
+  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [guesses, setGuesses] = useState([]);
+  const [validWords, setValidWords] = useState([]);
+
+  useEffect(() => {
+    fetch(wordList)
+      .then((t) => t.text())
+      .then((text) => text.split('\n'))
+      .then((wordList) =>
+        wordList
+          .filter((word) => word.length === 5)
+          .map((word) => word.toUpperCase())
+      )
+      .then((wordList) => setValidWords(wordList));
+  }, []);
+
+  const handleLetterKeyPress = (keyValue) => {
+    if (currentGuess.length < 5) {
+      setCurrentGuess(currentGuess + keyValue);
+    }
+  };
+
+  const handleDeletePress = () => {
+    if (currentGuess.length > 0) {
+      setCurrentGuess(currentGuess.slice(0, -1));
+    }
+  };
+
+  const handleEnterPress = () => {
+    if (currentGuess.length === 5) {
+      if (validWords.includes(currentGuess)) {
+        setGuesses([...guesses, currentGuess]);
+        updateGuessedLetters(currentGuess);
+        setCurrentGuess('');
+      }
+    }
+  };
+
+  const updateGuessedLetters = (guess) => {
+    const newLetters = [];
+    for (const c of guess) {
+      if (!guessedLetters.includes(c)) {
+        newLetters.push(c);
+      }
+    }
+    if (newLetters.length) {
+      const newGuessedLetters = [...guessedLetters, ...newLetters];
+      setGuessedLetters(newGuessedLetters);
+    }
+  };
+
+  const handleKeyPress = (keyValue) => {
+    if (keyValue === 'ENTER') {
+      handleEnterPress();
+      return;
+    }
+
+    if (keyValue === 'DELETE') {
+      handleDeletePress();
+      return;
+    }
+
+    handleLetterKeyPress(keyValue);
+  };
+
+  const guessObjects = guesses.map((guess) => ({ guess, submitted: true }));
+  guessObjects.push({ guess: currentGuess, submitted: false });
+
+  return (
+    <div className="app-container">
+      <WordGrid guesses={guessObjects} solution={SOLUTION} />
+      <KeyBoard
+        onKeyPress={handleKeyPress}
+        solution={SOLUTION}
+        guessedLetters={guessedLetters}
+      />
+    </div>
+  );
+}

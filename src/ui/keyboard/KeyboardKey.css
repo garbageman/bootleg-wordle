@@ -1,0 +1,19 @@
+.keyboard-key {
+  display: flex;
+  padding: 0.5rem;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  background-color: lightslategray;
+  margin: 0 0.2rem;
+}
+
+.correct {
+  background-color: #538d4e;
+}
+
+.incorrect {
+  background-color: #3a3a3c;
+}

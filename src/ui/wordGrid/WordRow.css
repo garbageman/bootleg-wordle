@@ -1,0 +1,7 @@
+.word-row {
+  display: flex;
+  flex-direction: row;
+  width: 20rem;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
