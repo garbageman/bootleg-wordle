@@ -5,8 +5,11 @@ import './KeyboardRow.css';
 export default function KeyboardRow(props) {
   const getKeyState = (keyValue) => {
     if (props.guessedLetters.includes(keyValue)) {
-      if (props.solution.includes(keyValue)) {
+      if (props.correctLetters.includes(keyValue)) {
         return 'CORRECT';
+      }
+      if (props.solution.includes(keyValue)) {
+        return 'WRONG_SPOT';
       }
       return 'INCORRECT';
     }

@@ -10,6 +10,7 @@
   background-color: lightslategray;
   margin: 0 0.2rem;
   border-radius: 3px;
+  user-select: none;
 }
 
 .correct {
@@ -18,6 +19,10 @@
 
 .incorrect {
   background-color: #3a3a3c;
+}
+
+.wrong-spot {
+  background-color: goldenrod;
 }
 
 .special {

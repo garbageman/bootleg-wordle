@@ -15,9 +15,11 @@ const SOLUTION = potentialSolutions[solutionIndex].toUpperCase();
 export default function App() {
   const [currentGuess, setCurrentGuess] = useState('');
   const [guessedLetters, setGuessedLetters] = useState([]);
+  const [correctLetters, setCorrectLetters] = useState([]);
   const [guesses, setGuesses] = useState([]);
   const [validWords, setValidWords] = useState([]);
   const [completed, setCompleted] = useState(false);
+
   let overlayMessage = '';
   if (currentGuess === SOLUTION) {
     overlayMessage = 'CONGRATS!';
@@ -63,9 +65,13 @@ export default function App() {
 
   const updateGuessedLetters = (guess) => {
     const newLetters = [];
-    for (const c of guess) {
-      if (!guessedLetters.includes(c)) {
-        newLetters.push(c);
+    for (var i = 0; i < 5; i++) {
+      const letter = guess[i];
+      if (!guessedLetters.includes(letter)) {
+        newLetters.push(letter);
+      }
+      if (!correctLetters.includes(letter) && SOLUTION.charAt(i) === letter) {
+        setCorrectLetters([...correctLetters, letter]);
       }
     }
     if (newLetters.length) {
@@ -75,6 +81,10 @@ export default function App() {
   };
 
   const handleKeyPress = (keyValue) => {
+    if (completed) {
+      return;
+    }
+
     if (keyValue === 'ENTER') {
       handleEnterPress();
       return;
@@ -95,12 +105,13 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {completed ? <Overlay overlayMessage={overlayMessage}  /> : null }
+      {completed ? <Overlay overlayMessage={overlayMessage} /> : null}
       <WordGrid guesses={guessObjects} solution={SOLUTION} />
       <KeyBoard
         onKeyPress={handleKeyPress}
         solution={SOLUTION}
         guessedLetters={guessedLetters}
+        correctLetters={correctLetters}
       />
     </div>
   );

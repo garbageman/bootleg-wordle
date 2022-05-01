@@ -12,18 +12,21 @@ export default function KeyBoard(props) {
         keyList={FIRST_ROW}
         solution={props.solution}
         guessedLetters={props.guessedLetters}
+        correctLetters={props.correctLetters}
         keyClickCallback={props.onKeyPress}
       />
       <KeyboardRow
         keyList={SECOND_ROW}
         solution={props.solution}
         guessedLetters={props.guessedLetters}
+        correctLetters={props.correctLetters}
         keyClickCallback={props.onKeyPress}
       />
       <KeyboardRow
         keyList={THIRD_ROW}
         solution={props.solution}
         guessedLetters={props.guessedLetters}
+        correctLetters={props.correctLetters}
         keyClickCallback={props.onKeyPress}
       />
     </div>

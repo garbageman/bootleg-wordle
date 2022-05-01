@@ -12,6 +12,10 @@ export default function KeyboardKey(props) {
       keyClass = keyClass + ' incorrect';
     }
 
+    if (props.keyState === 'WRONG_SPOT') {
+      keyClass = keyClass + ' wrong-spot';
+    }
+
     if (props.keyValue === 'ENTER' || props.keyValue === 'DELETE') {
       keyClass = keyClass + ' special';
     }
@@ -27,10 +31,7 @@ export default function KeyboardKey(props) {
     return props.keyValue;
   };
   return (
-    <div
-      onClick={props.onClick}
-      className={getKeyboardKeyClasses()}
-    >
+    <div onClick={props.onClick} className={getKeyboardKeyClasses()}>
       {getTruncatedVal()}
     </div>
   );
