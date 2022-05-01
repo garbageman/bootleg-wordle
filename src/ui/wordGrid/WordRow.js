@@ -6,7 +6,6 @@ const MAX_WORD_LENGTH = 5;
 
 export default function WordRow(props) {
   const getLetterState = (letter, word, solution, index) => {
-    console.log(solution);
     if (!props.submitted) {
       return undefined;
     }
@@ -29,17 +28,10 @@ export default function WordRow(props) {
         .filter(
           ({ char, index }) => solution.charAt(index) !== word.charAt(index)
         );
-      console.log('unguessedletters');
-      console.log(unGuessedLetters);
       const countOfLetterInSolution = unGuessedLetters
         .map(({ char, index }) => char)
         .map((char) => (char === letter ? char : null))
         .filter((char) => char !== null).length;
-
-      console.log('relative position of letter in word');
-      console.log(relativePositionOfLetterInWord);
-      console.log('count of letter in solution');
-      console.log(countOfLetterInSolution);
 
       if (relativePositionOfLetterInWord < countOfLetterInSolution) {
         return 'WRONG_SPOT';
