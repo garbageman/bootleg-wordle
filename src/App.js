@@ -35,15 +35,40 @@ export default function App() {
       .then((wordList) => setValidWords(wordList));
   }, []);
 
+  useEffect(() => {
+    window.addEventListener('keydown', (e) => {
+      const keyValue = e.key.toUpperCase();
+      console.log(keyValue);
+      if (keyValue === 'BACKSPACE') {
+        setCurrentGuess((currentGuess) =>
+          currentGuess.length > 0 ? currentGuess.slice(0, -1) : currentGuess
+        );
+        return;
+      }
+      if (keyValue === 'ENTER') {
+        console.log('handling submission');
+        console.log(currentGuess);
+        return;
+      }
+      if (keyValue.match(/[A-Z]/i)) {
+        console.log('handling letter keypress');
+        setCurrentGuess((currentGuess) =>
+          currentGuess.length < 5 ? currentGuess + keyValue : currentGuess
+        );
+      }
+    });
+  }, []);
+
   const handleLetterKeyPress = (keyValue) => {
+    console.log(currentGuess);
     if (currentGuess.length < 5) {
-      setCurrentGuess(currentGuess + keyValue);
+      setCurrentGuess((currentGuess) => currentGuess + keyValue);
     }
   };
 
   const handleDeletePress = () => {
     if (currentGuess.length > 0) {
-      setCurrentGuess(currentGuess.slice(0, -1));
+      setCurrentGuess((currentGuess) => currentGuess.slice(0, -1));
     }
   };
 
@@ -92,7 +117,8 @@ export default function App() {
       return;
     }
 
-    if (keyValue === 'DELETE') {
+    if (keyValue === 'DELETE' || keyValue === 'BACKSPACE') {
+      console.log('Deleting letter');
       handleDeletePress();
       return;
     }
