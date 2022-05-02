@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import wordList from 'word-list';
 import { getWordsList } from 'most-common-words-by-language';
 import WordGrid from './ui/wordGrid/WordGrid.js';
@@ -20,8 +20,23 @@ export default function App() {
   const [validWords, setValidWords] = useState([]);
   const [completed, setCompleted] = useState(false);
   const [solved, setSolved] = useState(false);
+  const latestCurrentGuess = useRef(currentGuess);
+  const latestGuesses = useRef(guesses);
+  const latestGuessedLetters = useRef(guessedLetters);
+  const latestCorrectLetters = useRef(correctLetters);
+  const latestValidWords = useRef(validWords);
+  const latestCompleted = useRef(completed);
 
   const overlayMessage = solved ? 'CONGRATS!' : SOLUTION;
+
+  useEffect(() => {
+    latestCurrentGuess.current = currentGuess;
+    latestGuesses.current = guesses;
+    latestGuessedLetters.current = guessedLetters;
+    latestCorrectLetters.current = correctLetters;
+    latestValidWords.current = validWords;
+    latestCompleted.current = completed;
+  });
 
   useEffect(() => {
     fetch(wordList)
@@ -37,52 +52,58 @@ export default function App() {
 
   useEffect(() => {
     window.addEventListener('keydown', (e) => {
+      if (latestCompleted.current) {
+        return;
+      }
+
       const keyValue = e.key.toUpperCase();
-      console.log(keyValue);
       if (keyValue === 'BACKSPACE') {
-        setCurrentGuess((currentGuess) =>
-          currentGuess.length > 0 ? currentGuess.slice(0, -1) : currentGuess
-        );
+        handleDeletePress();
         return;
       }
+
       if (keyValue === 'ENTER') {
-        console.log('handling submission');
-        console.log(currentGuess);
+        handleEnterPress();
         return;
       }
+
       if (keyValue.match(/[A-Z]/i)) {
-        console.log('handling letter keypress');
-        setCurrentGuess((currentGuess) =>
-          currentGuess.length < 5 ? currentGuess + keyValue : currentGuess
-        );
+        handleLetterKeyPress(keyValue);
       }
     });
   }, []);
 
   const handleLetterKeyPress = (keyValue) => {
-    console.log(currentGuess);
-    if (currentGuess.length < 5) {
-      setCurrentGuess((currentGuess) => currentGuess + keyValue);
+    if (latestCurrentGuess.current.length < 5) {
+      setCurrentGuess(latestCurrentGuess.current + keyValue);
     }
   };
 
   const handleDeletePress = () => {
-    if (currentGuess.length > 0) {
-      setCurrentGuess((currentGuess) => currentGuess.slice(0, -1));
+    if (latestCurrentGuess.current.length > 0) {
+      setCurrentGuess(latestCurrentGuess.current.slice(0, -1));
     }
   };
 
   const handleEnterPress = () => {
-    if (currentGuess.length === 5) {
-      if (validWords.includes(currentGuess)) {
-        setGuesses([...guesses, currentGuess]);
-        updateGuessedLetters(currentGuess);
+    console.log(latestCurrentGuess.current);
+    if (latestCurrentGuess.current.length === 5) {
+      if (latestValidWords.current.includes(latestCurrentGuess.current)) {
+        const newGuesses = [
+          ...latestGuesses.current,
+          latestCurrentGuess.current,
+        ];
+        setGuesses(newGuesses);
+        updateGuessedLetters(latestCurrentGuess.current);
         setCurrentGuess('');
       }
     }
 
-    setCompleted(guesses.length === 5 || currentGuess === SOLUTION);
-    setSolved(currentGuess === SOLUTION);
+    setCompleted(
+      latestGuesses.current.length === 5 ||
+        latestCurrentGuess.current === SOLUTION
+    );
+    setSolved(latestCurrentGuess.current === SOLUTION);
   };
 
   const updateGuessedLetters = (guess) => {
@@ -90,20 +111,24 @@ export default function App() {
     const newCorrectLetters = [];
     for (var i = 0; i < 5; i++) {
       const letter = guess.charAt(i);
-      if (!guessedLetters.includes(letter)) {
+      if (!latestGuessedLetters.current.includes(letter)) {
         newLetters.push(letter);
       }
-      if (!correctLetters.includes(letter) && SOLUTION.charAt(i) === letter) {
+      if (
+        !latestCorrectLetters.current.includes(letter) &&
+        SOLUTION.charAt(i) === letter
+      ) {
         newCorrectLetters.push(letter);
       }
     }
     if (newLetters.length) {
-      const totalGuessedLetters = [...guessedLetters, ...newLetters];
-      setGuessedLetters(totalGuessedLetters);
+      setGuessedLetters([...latestGuessedLetters.current, ...newLetters]);
     }
     if (newCorrectLetters.length) {
-      const totalCorrectLetters = [...correctLetters, ...newCorrectLetters];
-      setCorrectLetters(totalCorrectLetters);
+      setCorrectLetters([
+        ...latestCorrectLetters.current,
+        ...newCorrectLetters,
+      ]);
     }
   };
 
@@ -118,7 +143,6 @@ export default function App() {
     }
 
     if (keyValue === 'DELETE' || keyValue === 'BACKSPACE') {
-      console.log('Deleting letter');
       handleDeletePress();
       return;
     }
